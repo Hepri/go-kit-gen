@@ -51,20 +51,13 @@ func parseMethod(field *ast.Field) *Method {
 	case *ast.FuncType:
 		if t.Params != nil {
 			for _, p := range t.Params.List {
-				param := parseParam(p, len(m.Params))
-				// ignore context params
-				if param.Type != "context.Context" {
-					m.Params = append(m.Params, param)
-				}
+				m.Params = append(m.Params, parseParam(p, len(m.Params)))
 			}
 		}
 
 		if t.Results != nil {
 			for _, r := range t.Results.List {
-				res := parseResult(r, len(m.Results))
-				if res.Type != "error" {
-					m.Results = append(m.Results, res)
-				}
+				m.Results = append(m.Results, parseResult(r, len(m.Results)))
 			}
 		}
 	}
