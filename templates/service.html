@@ -1,0 +1,14 @@
+package {{ .PackageName }}
+
+import (
+"context"
+
+{{ range $i, $p := .Imports }}
+{{ $p }}
+{{ end }}
+)
+
+type {{ .Name }}Service interface {
+{{ range $i, $m := .Methods }}{{ if gt $i 0 }}
+{{ end }}{{ $m.Name }}(ctx context.Context{{ range $j, $p := $m.Params }}, {{ $p.Name }} {{ $p.Type }}{{ end }}) ({{ range $j, $r := $m.Results }}{{ $r.Name }} {{ $r.Type }},{{ end }}err error) {{ end }}
+}

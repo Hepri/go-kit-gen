@@ -1,0 +1,44 @@
+package {{ .PackageName }}
+
+import (
+"context"
+
+{{ range $i, $p := .Imports }}{{ if gt $i 0 }}
+{{ end }}{{ $p }}{{ end }}
+"github.com/go-kit/kit/endpoint"
+)
+
+type {{ .Name }}Endpoints struct {
+{{ range $i, $m := .Methods }}{{ if gt $i 0 }}
+{{ end }}{{ $m.Name }}Endpoint endpoint.Endpoint{{ end }}
+}
+
+{{ range $i, $m := .Methods }}
+type {{ $m.EndpointRequestName }} struct {
+{{ range $j, $p := $m.Params }}{{ if gt $j 0 }}
+{{ end }}{{ $p.PascalCaseName }} {{ $p.Type }}{{ end }}
+}
+
+type {{ $m.EndpointResponseName }} struct {
+{{ range $j, $p := $m.Results }}{{ if gt $j 0 }}
+{{ end }}{{ $p.PascalCaseName }} {{ $p.Type }}{{ end }}
+}
+
+{{ end }}
+
+{{ range $i, $m := .Methods }}
+func Make{{ $m.PascalCaseName }}Endpoint(s {{ $.Name }}Service) endpoint.Endpoint {
+    return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+        req := request.({{ $m.EndpointRequestName  }})
+        {{ range $j, $r := $m.Results }}{{ $r.GenName }}, {{ end }}err := s.{{ $m.Name }}(ctx{{ range $j, $p := $m.Params }}, req.{{ $p.PascalCaseName }}{{ end }})
+        if err != nil {
+            return nil, err
+        }
+
+        return {{ $m.EndpointResponseName }}{
+{{ range $j, $r := $m.Results }}{{ if gt $j 0 }}
+{{ end }}{{ $r.PascalCaseName }}: {{ $r.GenName }},{{ end }}
+        }, nil
+    }
+}
+{{ end }}

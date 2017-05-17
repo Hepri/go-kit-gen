@@ -1,0 +1,6 @@
+hash: 27864ee837b5351d3cb4d5fc13d5cce5c395cd3d85c576781038c6e61f702a69
+updated: 2017-05-17T23:58:23.570546118+05:00
+imports:
+- name: github.com/Hepri/case-transformer
+  version: a7aa7a309c85c18eacf292faf2c73fc67e16e1cf
+testImports: []
